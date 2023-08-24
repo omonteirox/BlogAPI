@@ -3,9 +3,12 @@ using Blog.Models;
 using BlogAPI.Extensions;
 using BlogAPI.Services;
 using BlogAPI.ViewModels;
+using BlogAPI.ViewModels.Accounts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SecureIdentity.Password;
+using System.Text.RegularExpressions;
 
 namespace BlogAPI.Controllers
 {
@@ -64,6 +67,37 @@ namespace BlogAPI.Controllers
             {
                 return BadRequest(new ResultViewModel<string>("AC0004 - Falha interna no servidor"));
             }
+        }
+
+        [Authorize]
+        [HttpPost("v1/account/upload-image")]
+        public async Task<IActionResult> UploadImage([FromBody] UploadImageViewModel model, [FromServices] BlogDataContext ctx)
+        {
+            var filename = $"{Guid.NewGuid()}.jpg";
+            var data = new Regex(@"^data:image\/[a-z]+;base64").Replace(model.Base64Image, "");
+            var bytes = Convert.FromBase64String(data);
+            try
+            {
+                await System.IO.File.WriteAllBytesAsync($"wwwroot/images/{filename}", bytes);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResultViewModel<string>("AC0005 - Falha interna no servidor"));
+            }
+            var user = await ctx.Users.FirstOrDefaultAsync(x => x.Email == User.Identity.Name);
+            if (user == null)
+                return BadRequest(new ResultViewModel<string>("AC0006 - Usuário não encontrado"));
+            user.Image = $"https://localhost:0000/images/{filename}";
+            try
+            {
+                ctx.Update(user);
+                await ctx.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResultViewModel<string>("AC0007 - Falha interna no servidor"));
+            }
+            return Ok(new ResultViewModel<dynamic>($"Imagem alterada com êxito, {user.Image}", null));
         }
     }
 }

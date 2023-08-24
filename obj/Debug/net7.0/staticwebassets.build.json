@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "/bwfebzdcsatUeDz7DNbVOXSdgc+0Tp8PfaLhs3pu8E=",
+  "Hash": "wpoNtbhKrxEtxdrgYF8RynYI2Jc+VnMkGBRW32CdqjU=",
   "Source": "BlogAPI",
   "BasePath": "_content/BlogAPI",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "BlogAPI\\wwwroot",
+      "Source": "BlogAPI",
+      "ContentRoot": "C:\\dev\\.net\\BlogAPI\\wwwroot\\",
+      "BasePath": "_content/BlogAPI",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

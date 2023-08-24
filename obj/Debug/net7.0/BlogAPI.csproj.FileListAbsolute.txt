@@ -70,3 +70,4 @@ C:\dev\.net\BlogAPI\obj\Debug\net7.0\BlogAPI.pdb
 C:\dev\.net\BlogAPI\obj\Debug\net7.0\BlogAPI.genruntimeconfig.cache
 C:\dev\.net\BlogAPI\obj\Debug\net7.0\ref\BlogAPI.dll
 C:\dev\.net\BlogAPI\bin\Debug\net7.0\SecureIdentity.dll
+C:\dev\.net\BlogAPI\bin\Debug\net7.0\BlogAPI.staticwebassets.runtime.json
