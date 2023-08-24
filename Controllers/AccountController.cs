@@ -13,7 +13,7 @@ namespace BlogAPI.Controllers
     public class AccountController : ControllerBase
     {
         [HttpPost("v1/accounts")]
-        public async Task<IActionResult> Post([FromBody] RegisterViewModel model, [FromServices] BlogDataContext ctx)
+        public async Task<IActionResult> Post([FromBody] RegisterViewModel model, [FromServices] BlogDataContext ctx, [FromServices] EmailService emailService)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
@@ -30,7 +30,8 @@ namespace BlogAPI.Controllers
             {
                 await ctx.Users.AddAsync(user);
                 await ctx.SaveChangesAsync();
-                return Ok(new ResultViewModel<dynamic>(new { user = user.Email, password }));
+                emailService.Send(user.Name, user.Email, "Bem vindo ao BlogAPI by Gustavo Monteiro", $"Sua senha é: <strong> {password} </strong>");
+                return Ok(new ResultViewModel<dynamic>(new { user = user.Email, password = "Senha enviada por e-mail", senhaReal = user.PasswordHash }));
             }
             catch (DbUpdateException ex)
             {

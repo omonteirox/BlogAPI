@@ -25,6 +25,7 @@ static void LoadConfiguration(WebApplication app)
     Configuration.JwtKey = app.Configuration.GetValue<string>("JwtKey");
     Configuration.ApiKey = app.Configuration.GetValue<string>("ApiKey");
     Configuration.ApiKeyName = app.Configuration.GetValue<string>("ApiKeyName");
+    Configuration.Smtp = smtp;
 }
 
 static void ConfigureAuthentication(WebApplicationBuilder builder)
@@ -51,6 +52,7 @@ static void ConfigureServices(WebApplicationBuilder builder)
 {
     builder.Services.AddDbContext<BlogDataContext>();
     builder.Services.AddTransient<TokenService>();
+    builder.Services.AddTransient<EmailService>();
 }
 
 static void ConfigureMvc(WebApplicationBuilder builder)
