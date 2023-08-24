@@ -34,7 +34,7 @@ namespace BlogAPI.Controllers
                 await ctx.Users.AddAsync(user);
                 await ctx.SaveChangesAsync();
                 emailService.Send(user.Name, user.Email, "Bem vindo ao BlogAPI by Gustavo Monteiro", $"Sua senha é: <strong> {password} </strong>");
-                return Ok(new ResultViewModel<dynamic>(new { user = user.Email, password = "Senha enviada por e-mail", senhaReal = user.PasswordHash }));
+                return Ok(new ResultViewModel<dynamic>(new { user = user.Email, password = "Senha enviada por e-mail" }));
             }
             catch (DbUpdateException ex)
             {
@@ -47,7 +47,7 @@ namespace BlogAPI.Controllers
         }
 
         [HttpPost("v1/login")]
-        public async Task<IActionResult> Login([FromServices] TokenService tokenService, [FromBody] LoginViewModel model, [FromServices] BlogDataContext ctx)
+        public async Task<IActionResult> Login([FromServices] TokenService tokenService, [FromBody] LoginViewModel model, [FromServices] BlogDataContext ctx, [FromServices] EmailService emailService)
         {
             if (!ModelState.IsValid)
                 return BadRequest(new ResultViewModel<string>(ModelState.GetErrors()));
@@ -61,7 +61,8 @@ namespace BlogAPI.Controllers
             try
             {
                 var token = tokenService.GenerateToken(user);
-                return Ok(new ResultViewModel<dynamic>(token, null));
+                emailService.Send(user.Name, user.Email, "Token de acesso ao BlogAPI by Gustavo Monteiro", $"Seu token é: <strong> {token} </strong>");
+                return Ok(new ResultViewModel<dynamic>("Token enviado por e-mail", null));
             }
             catch (Exception ex)
             {
